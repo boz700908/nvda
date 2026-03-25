@@ -27,6 +27,7 @@ The triple-press keyboard shortcut (`NVDA+ctrl+r`) is not affected, as it is int
 * Added an unassigned command to report the current status of the Screen Curtain. (#19759)
 * DotPad braille displays now support multi-button combination gestures. (#19565, @bramd)
   * You can now press multiple buttons simultaneously to create custom gestures (e.g., `f1+panLeft`).
+* A new voice setting "Natural pause after punctuation" was added for OneCore voices, allowing users to turn punctuation pauses on or off. (#11876, @gexgd0419)
 
 ### Changes
 
