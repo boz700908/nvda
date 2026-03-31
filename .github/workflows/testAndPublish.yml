@@ -106,7 +106,7 @@ jobs:
     # This information is static for the current Github Actions runner image.
     # Therefore, cache this information with a key scoped to the current image version, ensuring that subsequent workflow runs will be much faster.
     - name: SCons MSVC Cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ${{ env.SCONS_CACHE_MSVC_CONFIG }}
         key: ${{ env.SCONS_CACHE_KEY }}
@@ -123,7 +123,7 @@ jobs:
     - name: Prepare for tests
       run: ci/scripts/tests/beforeTests.ps1
     - name: Cache scons build
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ matrix.pythonVersion }}-${{ matrix.arch }}
@@ -141,7 +141,7 @@ jobs:
     needs: [matrix, buildNVDA]
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ env.defaultPythonVersion }}-${{ env.defaultArch }}
@@ -193,7 +193,7 @@ jobs:
     needs: [matrix, buildNVDA]
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ env.defaultPythonVersion }}-${{ env.defaultArch }}
@@ -222,7 +222,7 @@ jobs:
     needs: [matrix, buildNVDA]
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ env.defaultPythonVersion }}-${{ env.defaultArch }}
@@ -250,7 +250,7 @@ jobs:
       uv-arch: ${{ matrix.arch == 'x64' && 'x86_64' || 'x86' }}
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ matrix.pythonVersion }}-${{ matrix.arch }}
@@ -293,7 +293,7 @@ jobs:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/beta' && vars.CROWDIN_PROJECT_ID }}
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ env.defaultPythonVersion }}-${{ env.defaultArch }}
@@ -335,7 +335,7 @@ jobs:
       launcherSha256: ${{ steps.addJobSummary.outputs.SHA256 }}
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ matrix.pythonVersion }}-${{ matrix.arch }}
@@ -434,7 +434,7 @@ jobs:
       uv-arch: ${{ matrix.arch == 'x64' && 'x86_64' || 'x86' }}
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ matrix.pythonVersion }}-${{ matrix.arch }}
@@ -499,7 +499,7 @@ jobs:
       symbolsArtifactId: ${{ steps.defaultArtifact.outputs.artifactId }}
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ matrix.pythonVersion }}-${{ matrix.arch }}
@@ -544,7 +544,7 @@ jobs:
     if: ${{ github.event_name == 'push' && vars.feature_uploadSymbolsToMozilla }}
     steps:
     - name: Checkout cached build
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: .
         key: ${{ github.ref }}-${{ github.run_id }}-${{ env.defaultPythonVersion }}-${{ env.defaultArch }}
