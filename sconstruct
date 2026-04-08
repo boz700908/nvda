@@ -5,15 +5,12 @@
 # This file may be used under the terms of the GNU General Public License, version 2 or later.
 # For more details see: https://www.gnu.org/licenses/gpl-2.0.html
 
-import copy
 import multiprocessing
 import os
-import shutil
 import platform
 import sys
 from pathlib import Path
 
-from SCons.Errors import UserError
 
 # Ensure we are inside the Python virtual environment, and that it is started with uv
 virtualEnv = os.getenv("VIRTUAL_ENV")
@@ -27,7 +24,6 @@ if not virtualEnv or not uv or Path.cwd() != Path(virtualEnv).parent:
 
 import time  # noqa: E402
 import importlib.util  # noqa: E402
-import winreg  # noqa: E402
 
 
 def recursiveCopy(env, targetDir, sourceDir):
@@ -310,7 +306,11 @@ envArm64.SConscript(
 )
 envArm64EC.SConscript(
 	"nvdaHelper/archBuild_sconscript",
-	exports={"env": envArm64EC, "clientInstallDir": clientDir.Dir("arm64ec"), "libInstallDir": sourceLibDirArm64EC},
+	exports={
+		"env": envArm64EC,
+		"clientInstallDir": clientDir.Dir("arm64ec"),
+		"libInstallDir": sourceLibDirArm64EC,
+	},
 	variant_dir="build/arm64ec",
 )
 
@@ -390,20 +390,22 @@ def NVDADistGenerator(target, source, env, for_signature):
 	updateVersionType = env["updateVersionType"] or None
 	# Any '\n' characters written are translated to the system default line separator, os.linesep.
 	action = [
-		lambda target, source, env: open(buildVersionFn, "w", encoding="utf-8").write(
-			"version = {version!r}\n"
-			"publisher = {publisher!r}\n"
-			"updateVersionType = {updateVersionType!r}\n"
-			"version_build = {version_build!r}\n".format(
-				version=version,
-				publisher=publisher,
-				updateVersionType=updateVersionType,
-				version_build=version_build,
+		lambda target, source, env: (
+			open(buildVersionFn, "w", encoding="utf-8").write(
+				"version = {version!r}\n"
+				"publisher = {publisher!r}\n"
+				"updateVersionType = {updateVersionType!r}\n"
+				"version_build = {version_build!r}\n".format(
+					version=version,
+					publisher=publisher,
+					updateVersionType=updateVersionType,
+					version_build=version_build,
+				)
 			)
+			# In Python 3 write returns the number of characters written,
+			# which scons treats as an error code.
+			and None
 		)
-		# In Python 3 write returns the number of characters written,
-		# which scons treats as an error code.
-		and None
 	]
 
 	buildCmd = ["cd", source[0].path, "&&", sys.executable]
@@ -428,9 +430,9 @@ def NVDADistGenerator(target, source, env, for_signature):
 		for prog in executablesToSign:
 			path = os.path.join(target[0].abspath, prog)
 			action.append(
-				lambda target, source, env, pathByVal=path: env["signExec"](
-					[File(pathByVal)], source, env
-				) if os.path.isfile(pathByVal) else None
+				lambda target, source, env, pathByVal=path: (
+					env["signExec"]([File(pathByVal)], source, env) if os.path.isfile(pathByVal) else None
+				)
 			)
 
 	action.extend((Delete(buildVersionFn), Delete(importlib.util.cache_from_source(buildVersionFn))))
@@ -708,22 +710,22 @@ synthDriverHost32Runtime = env.Command(
 	source="#runtime-builders/synthDriverHost32/setup-runtime.py",
 	chdir=Dir("#runtime-builders/synthDriverHost32"),
 	action=[
-		  [
-			  "uv",
-			  "run",
-			  "-v",
-			  "--no-active",
-			  "--directory",
-			  ".",
-			  "python",
-			  "setup-runtime.py",
-			  "--dest-dir",
-			  "dist",
-			  "--version",
-			  version,
-			  "--publisher",
-			  publisher,
-		  ],
+		[
+			"uv",
+			"run",
+			"-v",
+			"--no-active",
+			"--directory",
+			".",
+			"python",
+			"setup-runtime.py",
+			"--dest-dir",
+			"dist",
+			"--version",
+			version,
+			"--publisher",
+			publisher,
+		],
 		r"rmdir /s /q ..\..\source\lib\x86\synthDriverHost-runtime || exit 0",
 		r"xcopy /e /i /y dist ..\..\source\lib\x86\synthDriverHost-runtime",
 	],
@@ -734,9 +736,25 @@ env.Alias("synthDriverHost32Runtime", synthDriverHost32Runtime)
 
 # Copy sapi5 and sonic Python files to the _synthDrivers32 directory
 # As they require no changes, but need to be in an isolated directory for 32 bit.
-env.Command(sourceDir.File('_synthDrivers32/_sonic.py'), sourceDir.File('synthDrivers/_sonic.py'), Copy("$TARGET", "$SOURCE"))
-env.Command(sourceDir.File('_synthDrivers32/_sapi5.py'), sourceDir.File('synthDrivers/sapi5.py'), Copy("$TARGET", "$SOURCE"))
+env.Command(
+	sourceDir.File("_synthDrivers32/_sonic.py"),
+	sourceDir.File("synthDrivers/_sonic.py"),
+	Copy("$TARGET", "$SOURCE"),
+)
+env.Command(
+	sourceDir.File("_synthDrivers32/_sapi5.py"),
+	sourceDir.File("synthDrivers/sapi5.py"),
+	Copy("$TARGET", "$SOURCE"),
+)
 
 # Parts of the speech package are quired by the 32 bit synthDriver host tunrime
-env.Command(sourceDir.File('_bridge/runtimes/synthDriverHost/speech/commands.py'), sourceDir.File('speech/commands.py'), Copy("$TARGET", "$SOURCE"))
-env.Command(sourceDir.File('_bridge/runtimes/synthDriverHost/speech/types.py'), sourceDir.File('speech/types.py'), Copy("$TARGET", "$SOURCE"))
+env.Command(
+	sourceDir.File("_bridge/runtimes/synthDriverHost/speech/commands.py"),
+	sourceDir.File("speech/commands.py"),
+	Copy("$TARGET", "$SOURCE"),
+)
+env.Command(
+	sourceDir.File("_bridge/runtimes/synthDriverHost/speech/types.py"),
+	sourceDir.File("speech/types.py"),
+	Copy("$TARGET", "$SOURCE"),
+)
