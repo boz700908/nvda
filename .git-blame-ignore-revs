@@ -29,3 +29,5 @@ be112ed44cb68f622a770c72fd29dd10899e9d07
 73a3529d8b10eb73a45117eead906c0a9cb4c41b
 # String concatenation
 9616ef6b18b5c5a5b64037a640d205868e66b964
+# Run runlint.bat on scons and .pyw files
+0643d6e41089fb6aed22d489c7ccc3f32381f199
