@@ -6,6 +6,7 @@
 
 ### New Features
 
+* Added the ability to automatically scroll the braille display. (#18573, @nvdaes)
 * After installing or updating NVDA, a dialog now offers options to restart Windows, start the installed copy, or exit the installer. (#19268, #19718, @kefaslungu)
 * NVDA now includes a built-in Magnifier feature that allows you to zoom and magnify parts of the screen. (#19228, @Boumtchack)
   * The magnifier supports various zoom levels, color filters (normal, grayscale, inverted), and different focus tracking modes.
@@ -79,6 +80,14 @@ The `scons checkPot` target has also been replaced with `runcheckpot.bat`.
 Use the individual test commands instead: `runcheckpot.bat`, `rununittests.bat`, `runsystemtests.bat`, `runlint.bat`. (#19606, #19676, @bramd)
 * Updated Python 3.13.11 to 3.13.12 (#19572, @dpy013)
 * Added a private `_asyncioEventLoop` module that provides an asyncio event loop running on a background thread for use by NVDA components. (#19816, @bramd)
+* Added several functions related to the braille auto-scroll feature. (#18573, @nvdaes):
+  * Added an `autoScroll` method to `braille.handler`.
+  * Added several functions for handling configuration value conversions and updates in `config.conf`:
+    * Added a `getConfigValue` function to get the value for a provided configuration key path.
+    * Added a `setConfigValue` function to set a value for a provided configuration key path.
+    * Added a `valueToPercentage` function to calculate the percentage representation of a configuration value within its range.
+    * Added a `percentageToValue` function to convert a percentage to the corresponding configuration value.
+    * Added a `clampedIncrementAndUpdateConfig` function to update a configuration value by applying a step, constrained within its valid range.
 
 #### Deprecations
 
