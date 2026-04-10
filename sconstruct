@@ -19,7 +19,7 @@ uv = os.getenv("uv")
 if not virtualEnv or not uv or Path.cwd() != Path(virtualEnv).parent:
 	print(
 		"Error: SCons was started outside NVDA's build system Python virtual environment.\n"
-		"SCons must be executed using scons.bat in the root of this repository."
+		"SCons must be executed using scons.bat in the root of this repository.",
 	)
 	sys.exit(1)
 
@@ -74,7 +74,7 @@ vars.Add(
 		"The certificate file with which to sign executables",
 		"",
 		lambda key, val, env: not val or PathVariable.PathIsFile(key, val, env),
-	)
+	),
 )
 vars.Add("certPassword", "The password for the private key in the signing certificate", "")
 vars.Add(
@@ -89,7 +89,7 @@ vars.Add(
 		"The directory where the final built archives and such will be placed",
 		"output",
 		PathVariable.PathIsDirCreate,
-	)
+	),
 )
 vars.Add(
 	ListVariable(
@@ -97,7 +97,7 @@ vars.Add(
 		"a list of debugging features you require",
 		"none",
 		["debugCRT", "RTC", "analyze"],
-	)
+	),
 )
 vars.Add(
 	EnumVariable(
@@ -105,7 +105,7 @@ vars.Add(
 		"The level of logging you wish to see, lower is more verbose",
 		"15",
 		allowed_values=[str(x) for x in range(60)],
-	)
+	),
 )
 
 # Base environment for this and sub sconscripts
@@ -265,7 +265,9 @@ projectRCSubstDict = {
 resFile = env.RES(
 	target="build/nvda.res",
 	source=env.Substfile(
-		target="build/nvda.rc", source="nvdaHelper/nvda.rc.subst", SUBST_DICT=projectRCSubstDict
+		target="build/nvda.rc",
+		source="nvdaHelper/nvda.rc.subst",
+		SUBST_DICT=projectRCSubstDict,
 	),
 )
 env32["projectResFile"] = resFile
@@ -401,12 +403,12 @@ def NVDADistGenerator(target, source, env, for_signature):
 					publisher=publisher,
 					updateVersionType=updateVersionType,
 					version_build=version_build,
-				)
+				),
 			)
 			# In Python 3 write returns the number of characters written,
 			# which scons treats as an error code.
 			and None
-		)
+		),
 	]
 
 	buildCmd = ["cd", source[0].path, "&&", sys.executable]
@@ -433,7 +435,7 @@ def NVDADistGenerator(target, source, env, for_signature):
 			action.append(
 				lambda target, source, env, pathByVal=path: (
 					env["signExec"]([File(pathByVal)], source, env) if os.path.isfile(pathByVal) else None
-				)
+				),
 			)
 
 	action.extend((Delete(buildVersionFn), Delete(importlib.util.cache_from_source(buildVersionFn))))
@@ -509,7 +511,7 @@ uninstGen = env.Command(
 			"/DUNINSTEXE=%s" % uninstFile.abspath,
 			"/DINSTEXE=${TARGET.abspath}",
 			"$SOURCE",
-		]
+		],
 	],
 )
 uninstaller = env.Command(uninstFile, uninstGen, [uninstGen])
@@ -517,7 +519,8 @@ if certFile or apiSigningToken:
 	env.AddPostAction(uninstaller, [env["signExec"]])
 
 devDocTargets = env.SConscript(
-	"projectDocs/dev/developerGuide/sconscript", exports=["env", "outputDir", "sourceDir", "userDocsDir"]
+	"projectDocs/dev/developerGuide/sconscript",
+	exports=["env", "outputDir", "sourceDir", "userDocsDir"],
 )
 dist = env.NVDADist("dist", [sourceDir, userDocsDir], uiAccess=bool(certFile) or bool(apiSigningToken))
 env.Depends(dist, uninstaller)
@@ -546,7 +549,7 @@ launcher = env.Command(
 			"/DNVDADistDir=${SOURCES[1].abspath}",
 			"/DLAUNCHEREXE=${TARGET.abspath}",
 			"$SOURCE",
-		]
+		],
 	],
 )
 if certFile or apiSigningToken:
@@ -554,12 +557,16 @@ if certFile or apiSigningToken:
 env.Alias("launcher", launcher)
 
 clientArchive = env.ZipArchive(
-	outputDir.File("%s_controllerClient.zip" % outFilePrefix), clientDir, relativeTo=clientDir
+	outputDir.File("%s_controllerClient.zip" % outFilePrefix),
+	clientDir,
+	relativeTo=clientDir,
 )
 env.Alias("client", clientArchive)
 
 outputStylesFile = env.Command(
-	outputDir.File("styles.css"), userDocsDir.File("styles.css"), Copy("$TARGET", "$SOURCE")
+	outputDir.File("styles.css"),
+	userDocsDir.File("styles.css"),
+	Copy("$TARGET", "$SOURCE"),
 )
 outputHeadingStylesFile = env.Command(
 	outputDir.File("numberedHeadings.css"),
@@ -576,13 +583,17 @@ env.Depends(changesFile, outputStylesFile)
 env.Alias("changes", changesFile)
 
 userGuideFile = env.Command(
-	outputDir.File("userGuide.html"), userDocsDir.File("en/userGuide.html"), Copy("$TARGET", "$SOURCE")
+	outputDir.File("userGuide.html"),
+	userDocsDir.File("en/userGuide.html"),
+	Copy("$TARGET", "$SOURCE"),
 )
 env.Depends(userGuideFile, outputStylesFile)
 env.Alias("userGuide", userGuideFile)
 
 keyCommandsFile = env.Command(
-	outputDir.File("keyCommands.html"), userDocsDir.File("en/keyCommands.html"), Copy("$TARGET", "$SOURCE")
+	outputDir.File("keyCommands.html"),
+	userDocsDir.File("en/keyCommands.html"),
+	Copy("$TARGET", "$SOURCE"),
 )
 env.Depends(keyCommandsFile, outputStylesFile)
 env.Depends(keyCommandsFile, userGuideFile)
@@ -623,8 +634,8 @@ def makePot(target, source, env):
 					"--language=python",
 					# Too many files to list on commandline, use a file list instead.
 					f"--files-from={potSourceFileList.abspath}",
-				]
-			]
+				],
+			],
 		)
 		!= 0
 	):

@@ -17,7 +17,7 @@ Import(
 	[
 		"env",
 		"localLib",
-	]
+	],
 )
 
 UIARemoteLib = env.SharedLibrary(

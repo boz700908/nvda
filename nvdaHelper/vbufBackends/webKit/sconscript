@@ -16,7 +16,7 @@
 Import(
 	[
 		"env",
-	]
+	],
 )
 
 webKitBackendLib = env.Object("webKit.cpp")

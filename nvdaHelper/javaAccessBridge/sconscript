@@ -8,7 +8,7 @@ Import(
 	[
 		"thirdPartyEnv",
 		"sourceDir",
-	]
+	],
 )
 
 env: Environment = thirdPartyEnv

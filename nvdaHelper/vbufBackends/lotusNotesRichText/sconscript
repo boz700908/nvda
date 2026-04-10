@@ -16,7 +16,7 @@
 Import(
 	[
 		"env",
-	]
+	],
 )
 
 lotusNotesRichTextBackendLib = env.Object("lotusNotesRichText.cpp")

@@ -16,7 +16,7 @@
 Import(
 	[
 		"env",
-	]
+	],
 )
 
 winIPCUtilsObj = env.Object("./winIPCUtils", "../common/winIPCUtils.cpp")

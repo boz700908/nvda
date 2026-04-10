@@ -20,7 +20,9 @@ env["MIDLCOM"] = env["MIDLCOM"][:-6]
 # Copy some secondary IDL files included by ISimpleDOMNode.idl
 idlDeps = [
 	env.Command(
-		"ISimpleDOMText.idl", "#/miscDeps/include/ISimpleDOM/ISimpleDOMText.idl", Copy("$TARGET", "$SOURCE")
+		"ISimpleDOMText.idl",
+		"#/miscDeps/include/ISimpleDOM/ISimpleDOMText.idl",
+		Copy("$TARGET", "$SOURCE"),
 	),
 	env.Command(
 		"ISimpleDOMDocument.idl",

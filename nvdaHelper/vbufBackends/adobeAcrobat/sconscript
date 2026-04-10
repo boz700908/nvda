@@ -17,7 +17,7 @@ Import(
 	[
 		"env",
 		"acrobatAccessRPCStubs",
-	]
+	],
 )
 
 adobeAcrobatBackendLib = [

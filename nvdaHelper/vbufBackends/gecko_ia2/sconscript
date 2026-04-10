@@ -16,7 +16,7 @@
 Import(
 	[
 		"env",
-	]
+	],
 )
 
 geckoBackendLib = env.Object("gecko_ia2.cpp")

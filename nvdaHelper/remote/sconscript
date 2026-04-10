@@ -19,7 +19,7 @@ Import(
 		"ia2RPCStubs",
 		"detoursLib",
 		"apiHookObj",
-	]
+	],
 )
 
 winIPCUtilsObj = env.Object("./winIPCUtils", "../common/winIPCUtils.cpp")

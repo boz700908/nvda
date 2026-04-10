@@ -28,7 +28,9 @@ htmlFile = env.Command(
 	action=[f'@"{sys.executable}" source/md2html.py -t developerGuide "$SOURCE" "$TARGET"'],
 )
 devGuide = env.Command(
-	target=userDocsDir.File("developerGuide.html"), source=htmlFile, action=Move("$TARGET", "$SOURCE")
+	target=userDocsDir.File("developerGuide.html"),
+	source=htmlFile,
+	action=Move("$TARGET", "$SOURCE"),
 )
 env.Alias("developerGuide", devGuide)
 
@@ -72,7 +74,7 @@ sphinxAPIDocs = env.Command(
 			"$TARGET",
 			"$SOURCE",  # Module sources
 		]
-		+ [f"{sourceDir}\\{f}" for f in ignorePaths]
+		+ [f"{sourceDir}\\{f}" for f in ignorePaths],
 	],
 )
 sphinxHtml = env.Command(
@@ -87,7 +89,7 @@ sphinxHtml = env.Command(
 			"html",
 			"projectDocs/dev/developerGuide",  # Source directory
 			"$TARGET",  # Build directory
-		]
+		],
 	],
 )
 devDocs_nvda = env.Command(devDocsOutputDir.Dir("NVDA"), sphinxHtml, Move("$TARGET", "$SOURCE"))

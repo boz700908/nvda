@@ -99,7 +99,7 @@ env.Append(
 		# NOMINMAX: prevent minwindef.h min/max macro definition, which unexpectedly override developer
 		# expectations
 		"NOMINMAX",
-	]
+	],
 )
 
 env.Append(CXXFLAGS=["/EHsc"])
@@ -115,13 +115,13 @@ env.Append(
 		"/WX",
 		subsystem,
 		"/release",  # We always want a checksum in the header
-	]
+	],
 )
 env.Append(
 	ARFLAGS=[
 		"/WX",
 		subsystem,
-	]
+	],
 )
 if TARGET_ARCH == "x86_64":
 	env.Append(MIDLFLAGS="/x64")
@@ -148,7 +148,7 @@ if "RTC" in debug:
 # We always want debug symbols
 env.Append(PDB="${TARGET}.pdb")
 env.Append(
-	LINKFLAGS="/OPT:REF"
+	LINKFLAGS="/OPT:REF",
 )  # having symbols usually turns this off but we have no need for unused symbols
 
 env.Append(
@@ -159,7 +159,7 @@ env.Append(
 		# It will output a list of the include files.
 		# The option also displays nested include files, that is, the files
 		# included by the files that you include.
-	]
+	],
 )
 
 if isArm64EC:
@@ -180,7 +180,7 @@ thirdPartyEnv = env.Clone()
 env.Append(
 	CCFLAGS=[
 		"/W3",  # warning level 3
-	]
+	],
 )
 if "analyze" in debug:
 	env.Append(CCFLAGS=["/analyze"])
@@ -194,7 +194,7 @@ else:
 	env.Append(
 		CCFLAGS=[
 			"/WX",  # warnings as error, don't do this with analyze, the build stops too early
-		]
+		],
 	)
 
 Export("thirdPartyEnv")

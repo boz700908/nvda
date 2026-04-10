@@ -10,7 +10,7 @@ thirdPartyEnv: SCons.Environment.Environment
 Import(
 	[
 		"thirdPartyEnv",
-	]
+	],
 )
 
 sonicSrcDir = Dir("#include/sonic")

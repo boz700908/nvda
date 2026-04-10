@@ -14,7 +14,7 @@ Import(
 		"env",
 		"outFilePrefix",
 		"isStoreSubmission",
-	]
+	],
 )
 
 

@@ -22,7 +22,7 @@ Import(
 		"thirdPartyEnv",
 		"sourceDir",
 		"sonicLib",
-	]
+	],
 )
 
 freeLibrary = ctypes.windll.kernel32.FreeLibrary
@@ -128,7 +128,7 @@ env.Append(
 		"/DUSE_SPEECHPLAYER=1",
 		"/DUSE_KLATT=1",
 		"/DUSE_LIBSONIC=1",
-	]
+	],
 )
 
 env.Append(
@@ -139,7 +139,7 @@ env.Append(
 		espeakSrcDir.Dir("speechPlayer/include"),
 		sonicSrcDir,
 		espeakSrcDir.Dir("ucd-tools/src/include"),
-	]
+	],
 )
 
 
@@ -149,7 +149,7 @@ def espeak_compilePhonemeData_buildEmitter(target, source, env):
 		[
 			[Dir(topDir).File(f) for f in files if f not in phSourceIgnores]
 			for topDir, subdirs, files in os.walk(source[0].abspath)
-		]
+		],
 	)
 	sources = env.Flatten([phSources])
 	targets = [
@@ -1047,7 +1047,7 @@ def espeak_compileDict_buildAction(
 				f"Failed to compile dictionary: '{target}'"
 				f"\n rulesPath: {rulesPathEncoded}"
 				f"\n language: '{lang}'"
-				f"\n result: {espeak_ng_STATUS(compileDictResult)!s}"
+				f"\n result: {espeak_ng_STATUS(compileDictResult)!s}",
 			)
 			return ACTION_FAILURE
 	finally:
@@ -1133,7 +1133,8 @@ for i in phonemeData:
 env.AddPreAction(espeakLib, env.Action(cleanFiles_preBuildAction))
 # Move any extra dictionaries into dictsource for compilation
 env.Install(
-	espeakRepo.Dir("dictsource"), env.Glob(os.path.join(espeakRepo.abspath, "dictsource", "extra", "*_*"))
+	espeakRepo.Dir("dictsource"),
+	env.Glob(os.path.join(espeakRepo.abspath, "dictsource", "extra", "*_*")),
 )
 
 excludeLangs: typing.List[str] = []
@@ -1162,7 +1163,8 @@ for dictFileName, (langCode, inputFiles) in espeakDictionaryCompileList.items():
 	# Dictionaries can not be compiled in parallel, force SCons not to do this
 	env.SideEffect("_espeak_compileDict", dictFile)
 	env.InstallAs(  # Install files to the "synthDrivers/espeak-ng-data/" dir.
-		os.path.join(synthDriversDir.Dir("espeak-ng-data").abspath, dictFileName), dictFile
+		os.path.join(synthDriversDir.Dir("espeak-ng-data").abspath, dictFileName),
+		dictFile,
 	)
 
 env.Install(synthDriversDir, espeakLib)
@@ -1174,5 +1176,6 @@ espeakDataSource = espeakRepo.Dir("espeak-ng-data")
 # also install the lang and voices/!v directories. Exclude the voices/mb directory since we are not using mbrola.
 env.RecursiveInstall(targetEspeakDataDir.Dir("lang"), espeakDataSource.Dir("lang").abspath)
 env.RecursiveInstall(
-	targetEspeakDataDir.Dir("voices").Dir("!v"), espeakDataSource.Dir("voices").Dir("!v").abspath
+	targetEspeakDataDir.Dir("voices").Dir("!v"),
+	espeakDataSource.Dir("voices").Dir("!v").abspath,
 )
