@@ -33,3 +33,5 @@ be112ed44cb68f622a770c72fd29dd10899e9d07
 0643d6e41089fb6aed22d489c7ccc3f32381f199
 # Run add-trailing-comma and ruff format on scons files
 9fd7ba5cb268b64aacf45a43b1edb64c120ce20c
+# Run add-trailing-comma on pyw files
+fe1ef084fd30c04660d003011842617159ecc481
