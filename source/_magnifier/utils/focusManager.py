@@ -8,6 +8,7 @@ Focus Manager for the magnifier module.
 Handles all focus tracking logic and coordinate calculations.
 """
 
+from comtypes import COMError
 from logHandler import log
 import api
 import winUser
@@ -165,8 +166,10 @@ class FocusManager:
 			if coords != Coordinates(0, 0):
 				self._lastValidSystemFocusPosition = coords
 			return coords
-		except (NotImplementedError, LookupError, AttributeError, RuntimeError):
-			# Fallback: use focus object location
+		except Exception:
+			# COM errors (_ctypes.COMError), UIA failures, and other unexpected errors
+			# can occur when querying caret position. Fall back to focus object location.
+			log.debug("Failed to get caret position, falling back to focus object location", exc_info=True)
 			try:
 				focusObj = api.getFocusObject()
 				if focusObj and focusObj.location:
@@ -180,7 +183,10 @@ class FocusManager:
 			except Exception:
 				# Focus object location may fail (e.g., object without location)
 				# Fall through to return last valid position
-				pass
+				log.debug(
+					"Failed to get focus object location, falling back to last valid position",
+					exc_info=True,
+				)
 		return self._lastValidSystemFocusPosition
 
 	def _getReviewPosition(self) -> Coordinates | None:
@@ -197,7 +203,7 @@ class FocusManager:
 				if coords != Coordinates(0, 0):
 					self._lastValidReviewPosition = coords
 				return coords
-			except (NotImplementedError, LookupError, AttributeError):
+			except (NotImplementedError, LookupError, AttributeError, COMError):
 				# Review position may not support pointAtStart
 				pass
 		return None
@@ -212,7 +218,7 @@ class FocusManager:
 		"""
 		try:
 			return textInfo.pointAtStart
-		except (NotImplementedError, LookupError, AttributeError) as e:
+		except (NotImplementedError, LookupError, AttributeError, COMError) as e:
 			log.debug(f"pointAtStart failed for {textInfo!r}: {e}", exc_info=True)
 			originalExc = e
 
@@ -247,7 +253,7 @@ class FocusManager:
 				return Coordinates(x, y)
 			except Exception:
 				# Navigator object may not have a valid location
-				pass
+				log.debug("Failed to get navigator object location", exc_info=True)
 		return None
 
 	def _getNavigatorObjectPosition(self) -> Coordinates:
